@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Indeed 応募者</h1>
+<div class="card"><p class="muted">Indeed には雇用主が応募者へメッセージを送る公開 API がないため、承認後の文面を Indeed のメッセージ画面へ貼り付けて送信し、「送信済み」を押してください。</p>
+<table><tr><th>応募者</th><th>状態</th><th></th></tr>
+{% for a in rows %}
+<tr><td>{{ a.name }}<div class="muted">{{ a.job_title or '' }} {{ a.applied_at or '' }}</div>{% if a.contact_url %}<a href="{{ a.contact_url }}" target="_blank" rel="noopener">Indeedで開く</a>{% endif %}</td>
+<td>{{ {'new':'未対応','awaiting_approval':'承認待ち','approved_manual_send':'送信待ち（承認済み）','guided':'案内済み'}.get(a.status, a.status) }}</td>
+<td>{% if a.status == 'approved_manual_send' %}
+<details><summary>文面</summary><pre>{{ drafts.get(a.external_id, '') }}</pre></details>
+<form method="post" action="/indeed/{{ a.id }}/sent"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="pri">送信済み</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="3" class="muted">応募者が登録されていません</td></tr>{% endfor %}
+</table>
+<form method="post" action="/indeed/prepare"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="pri">未対応者への案内を承認依頼</button></form>
+</div>
+<form method="post" action="/indeed/import" class="card">
+<input type="hidden" name="csrf" value="{{ csrf }}">
+<h2>応募者の取込（CSV）</h2>
+<p class="muted">1 行目に見出し：{{ columns }}</p>
+<textarea name="csv_text" placeholder="{{ columns }}&#10;indeed-001,山田太郎,フォーム営業,2026-10-01,https://..."></textarea>
+<button>取り込む</button>
+</form>
+{% endblock %}

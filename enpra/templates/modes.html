@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>業務ごとの実行モード</h1>
+<p class="muted">A=確認必須 / B=自動実行＋結果通知 / C=完全自動（異常時のみ通知）。モードは自動では変わりません。</p>
+{% for r in rows %}
+<form method="post" action="/modes/{{ r.job_type }}" class="card">
+<input type="hidden" name="csrf" value="{{ csrf }}">
+<h2>{{ JOB_TYPES.get(r.job_type, [r.job_type])[0] }}</h2>
+{% if r.locked %}<p>MODE A（固定）<span class="muted">：報酬・契約判断や根拠のない回答を含むため変更不可</span></p>
+{% else %}
+<select name="mode">{% for k, v in MODES.items() %}<option value="{{ k }}" {% if r.mode==k %}selected{% endif %}>MODE {{ k }}：{{ v }}</option>{% endfor %}</select>
+<button>変更</button>
+{% endif %}
+<p class="muted">最終変更 {{ fmt_dt(r.updated_at) }}（{{ r.updated_by }}）</p>
+</form>
+{% endfor %}
+{% endblock %}

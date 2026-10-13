@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>承認待ち（{{ waiting|length }}）</h1>
+<div class="card"><ul class="list">
+{% for r in waiting %}
+<li><a href="/approvals/{{ r.id }}">{{ r.title }}</a> <span class="badge">{{ r.status }}</span>
+<div class="muted">{{ JOB_TYPES.get(r.job_type, [r.job_type])[0] }}・予定 {{ fmt_dt(r.scheduled_at) if r.scheduled_at else '承認後すぐ' }}{% if r.warnings %} <span class="warn">⚠{{ r.warnings|length }}</span>{% endif %}</div></li>
+{% else %}<li class="muted">承認待ちはありません</li>{% endfor %}
+</ul></div>
+
+{% if scheduled %}<h2>承認済み・予定時刻待ち</h2><div class="card"><ul class="list">
+{% for r in scheduled %}<li><a href="/approvals/{{ r.id }}">{{ r.title }}</a> <span class="muted">{{ fmt_dt(r.scheduled_at) }}</span></li>{% endfor %}
+</ul></div>{% endif %}
+
+<h2>Chatwork コンタクト</h2>
+<div class="card">
+{% if snap %}
+<p>{{ snap.count }} / {{ snap.limit }} 名（残り {{ snap.limit - snap.count if snap.limit > snap.count else 0 }} 名）・申請待ち {{ snap.pending_requests }} 件
+{% if snap.count >= snap.limit %}<span class="ng">上限到達：新規承認を停止中</span>{% elif snap.count >= settings.contact_warn_at %}<span class="warn">上限に近づいています</span>{% endif %}</p>
+<p class="muted">確認日時 {{ fmt_dt(snap.at) }}</p>
+{% else %}<p class="muted">未確認（contacts-check ジョブ実行後に表示）</p>{% endif %}
+</div>
+
+{% if failed_notices %}<h2 class="ng">送信できなかった通知</h2><div class="card"><ul class="list">
+{% for n in failed_notices %}<li>{{ fmt_dt(n.created_at) }} {{ n.kind }} <div class="muted">{{ n.error }}</div></li>{% endfor %}
+</ul></div>{% endif %}
+
+<h2>最近の処理</h2>
+<div class="card"><ul class="list">
+{% for r in recent %}<li><a href="/approvals/{{ r.id }}">{{ r.title }}</a> <span class="badge {{ 'ok' if r.status=='executed' else 'ng' if r.status=='failed' else '' }}">{{ r.status }}</span> <span class="muted">{{ fmt_dt(r.executed_at or r.decided_at) }}</span></li>
+{% else %}<li class="muted">まだありません</li>{% endfor %}
+</ul></div>
+{% endblock %}

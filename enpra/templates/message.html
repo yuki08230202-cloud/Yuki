@@ -1,0 +1,4 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="card"><h1>{{ title }}</h1><p>{{ body }}</p>{% if link %}<p><a href="{{ link }}">戻る</a></p>{% endif %}</div>
+{% endblock %}

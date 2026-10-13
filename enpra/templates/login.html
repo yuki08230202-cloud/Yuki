@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="card">
+<h1>管理者ログイン</h1>
+{% if error %}<p class="ng">{{ error }}</p>{% endif %}
+<form method="post" action="/login">
+<input type="hidden" name="next" value="{{ next }}">
+<label>パスワード<input type="password" name="password" autocomplete="current-password" required autofocus></label>
+<button class="pri">ログイン</button>
+</form>
+</div>
+{% endblock %}

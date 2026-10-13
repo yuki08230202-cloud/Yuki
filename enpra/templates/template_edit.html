@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>文面：{{ label }}</h1>
+<form method="post" class="card"><input type="hidden" name="csrf" value="{{ csrf }}">
+<p class="muted">差し込み：{name} {job_title} {chatwork_id} {admin_name} {date_ja} {deadline} {list_info}。Indeed 案内の Chatwork ID は送信時に設定値へ自動で置き換えます。</p>
+<textarea name="body" style="min-height:320px">{{ body }}</textarea>
+<button class="pri">保存</button></form>
+<p class="muted">{% for k in ['indeed_guide','recruit','individual_request','welcome'] %}<a href="/templates/{{ k }}">{{ k }}</a> {% endfor %}</p>
+{% endblock %}

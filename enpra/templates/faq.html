@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>FAQ・マニュアル</h1>
+<form method="post" action="/faq" class="card"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>質問<input type="text" name="question" required></label>
+<label>回答<textarea name="answer" required></textarea></label>
+<button class="pri">追加</button></form>
+{% for f in rows %}<div class="card"><span class="badge">{{ f.source }}</span><p><strong>Q.</strong> {{ f.question }}</p><pre>{{ f.answer }}</pre></div>{% endfor %}
+{% endblock %}

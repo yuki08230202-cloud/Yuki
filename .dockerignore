@@ -1,0 +1,6 @@
+.venv
+.git
+tests
+docs
+*.db
+.env

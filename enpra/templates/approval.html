@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>{{ req.title }}</h1>
+<div class="card">
+<p><span class="badge">{{ req.status }}</span> <span class="badge">MODE {{ req.mode }}：{{ MODES[req.mode] }}</span></p>
+<p>業務内容：{{ JOB_TYPES.get(req.job_type, [req.job_type])[0] }}<br>
+予定実行日時：{{ fmt_dt(req.scheduled_at) if req.scheduled_at else '承認後すぐ' }}<br>
+{% if req.url %}対象URL：<a href="{{ req.url }}">{{ req.url }}</a><br>{% endif %}
+{% if req.summary %}<span class="muted" style="white-space:pre-wrap">{{ req.summary }}</span>{% endif %}</p>
+{% if req.warnings %}<div class="warn"><strong>⚠ 確認事項</strong><ul>{% for w in req.warnings %}<li>{{ w }}</li>{% endfor %}</ul></div>{% endif %}
+{% if req.error %}<p class="ng">エラー：{{ req.error }}</p>{% endif %}
+{% if req.result and req.result.summary %}<pre>{{ req.result.summary }}</pre>{% endif %}
+</div>
+
+{% set decidable = req.status in ('pending','held','expired') %}
+{% set late = req.scheduled_at and req.scheduled_at <= now %}
+<form method="post" action="/approvals/{{ req.id }}/decide">
+<input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="token" value="{{ token }}">
+{% if req.targets %}
+<div class="card"><h2>対象者（{{ req.targets|length }}名）</h2>
+{% for t in req.targets %}
+<label><input type="checkbox" name="selected" value="{{ t.key }}" {% if req.selected_keys is none or t.key|string in req.selected_keys %}checked{% endif %} {% if not decidable %}disabled{% endif %}> {{ t.name }}</label>
+{% endfor %}
+<p class="muted">チェックを外した人には実行しません（個別承認）。全員チェックのままなら一括承認です。</p></div>
+{% endif %}
+<div class="card" id="edit"><h2>実行予定のメッセージ全文</h2>
+{% if decidable %}<textarea name="message">{{ req.message }}</textarea>
+<p class="muted">修正した場合は「修正して実行」を押してください。</p>{% else %}<pre>{{ req.message }}</pre>{% endif %}
+</div>
+{% if decidable %}
+<div class="card">
+{% if late %}<p class="warn">予定時刻（{{ fmt_dt(req.scheduled_at) }}）を過ぎています。承認すると<strong>即時に実行</strong>されます。送らない場合は「今回はスキップ」を選んでください。</p>{% endif %}
+<button class="pri" name="action" value="approve" {% if focus=='approve' %}autofocus{% endif %}>{% if late %}承認して即時送信{% elif req.scheduled_at %}承認（{{ fmt_dt(req.scheduled_at) }} に実行）{% else %}承認して実行{% endif %}</button>
+<button name="action" value="edit_approve">修正して実行</button>
+<div class="grid"><button name="action" value="hold">保留</button><button class="danger" name="action" value="skip">今回はスキップ</button></div>
+{% if not JOB_TYPES.get(req.job_type, ['', 'A', True])[2] %}
+<details style="margin-top:8px"><summary>同種の処理を今後自動化</summary>
+<p class="muted">今回分を承認し、「{{ JOB_TYPES.get(req.job_type, [req.job_type])[0] }}」の実行モードを変更します。モード画面からいつでも MODE A に戻せます。</p>
+<select name="automate_mode"><option value="B">MODE B：自動実行＋結果通知</option><option value="C">MODE C：完全自動（異常時のみ通知）</option></select>
+<label><input type="checkbox" name="confirm_automate" value="yes"> 今後この業務を承認なしで実行することに同意します</label>
+<button name="action" value="automate">承認して今後自動化</button>
+</details>
+{% else %}<p class="muted">この業務は常に確認必須のため自動化できません。</p>{% endif %}
+</div>
+{% endif %}
+</form>
+{% if req.status == 'failed' %}
+<form method="post" action="/approvals/{{ req.id }}/retry" class="card"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="pri">再実行（送信済みの相手には再送しません）</button></form>
+{% endif %}
+{% if req.status in ('pending','held','expired') and not token %}
+<form method="post" action="/approvals/{{ req.id }}/reissue" class="card"><input type="hidden" name="csrf" value="{{ csrf }}"><button>承認リンクを再発行して通知</button></form>
+{% endif %}
+{% if audits %}<div class="card"><h2>履歴</h2><ul class="list">{% for a in audits %}<li>{{ fmt_dt(a.at) }} {{ a.actor }}：{{ a.action }}</li>{% endfor %}</ul></div>{% endif %}
+{% endblock %}

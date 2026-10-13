@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}エンプラ管理{% endblock %}</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#1d2330;--muted:#6b7280;--line:#e3e6eb;--pri:#1f6feb;--ok:#1a7f37;--warn:#b35900;--ng:#cf222e}
+@media (prefers-color-scheme: dark){:root{--bg:#0f1115;--card:#171a21;--fg:#e6e8eb;--muted:#9aa3ae;--line:#2a2f3a;--pri:#4c8dff;--ok:#3fb950;--warn:#e3a14a;--ng:#ff6b6b}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 -apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+header{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+header a{color:var(--fg);text-decoration:none;font-size:14px}header strong{margin-right:auto}
+main{max-width:760px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
+.banner{background:var(--warn);color:#fff;padding:8px 16px;font-size:13px}
+h1{font-size:20px;margin:4px 0 12px}h2{font-size:16px;margin:0 0 8px}
+.muted{color:var(--muted);font-size:13px}.warn{color:var(--warn)}.ng{color:var(--ng)}.ok{color:var(--ok)}
+pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font:13px/1.5 ui-monospace,monospace}
+textarea,input[type=text],input[type=password],select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit}
+textarea{min-height:180px}
+button{padding:12px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;cursor:pointer;width:100%;margin:4px 0}
+button.pri{background:var(--pri);color:#fff;border-color:var(--pri)}button.danger{color:var(--ng)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.badge{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--line)}
+ul.list{list-style:none;padding:0;margin:0}ul.list li{padding:8px 0;border-bottom:1px solid var(--line)}
+ul.list a{color:var(--pri);text-decoration:none}label{display:block;margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{border-bottom:1px solid var(--line);padding:6px;text-align:left}
+</style>
+</head>
+<body>
+{% if settings.dry_run or settings.notify_dry_run %}<div class="banner">DRY_RUN 中：{% if settings.dry_run %}外部送信・シート更新は行いません{% endif %}{% if settings.notify_dry_run %} / 管理者通知も送信しません{% endif %}</div>{% endif %}
+{% if sess %}
+<header><strong>エンプラ管理</strong><a href="/">承認</a><a href="/modes">モード</a><a href="/indeed">Indeed</a><a href="/faq">FAQ</a><a href="/templates/indeed_guide">文面</a>
+<form method="post" action="/logout" style="margin:0"><button style="width:auto;padding:4px 10px;margin:0">ログアウト</button></form></header>
+{% endif %}
+<main>{% block body %}{% endblock %}</main>
+</body>
+</html>
