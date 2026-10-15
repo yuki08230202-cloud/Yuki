@@ -6,9 +6,14 @@
 毎日19:00にグループで翌日の作業者を募集します。
 参加できる日は、募集メッセージにスタンプをお願いします。
 
-■業務の取り組み方・マニュアル
-https://docs.google.com/spreadsheets/d/1uwiu42iTE9T8kROPmCQGWohYpdlumS-8gfSdgicQ3-g/edit?gid=249233971#gid=249233971
-送付する文章やよくある質問など、基本的な情報はすべてこちらに記載しております。
-ご質問の前に、必ずこちらをご確認ください。
+＜フォームワーカー向けマニュアル＞
+稼働マニュアル：https://docs.google.com/presentation/d/1pAk3pRAKhppTrLI8EhJpecKWcBtrBuYhSrBGOSPaV6M/edit?slide=id.p#slide=id.p
+文面：https://docs.google.com/spreadsheets/d/1yc3_AuWszGDTHDUKw18JFMmheiKEccJvqGLq43cej_Q/edit?pli=1&gid=713436949#gid=713436949
+リスト：https://docs.google.com/spreadsheets/d/1uDWJ6FXowds_NGuZ_8zLhgn8uUoe_985K9OKrSkelJw/edit?gid=314226798#gid=314226798
+問い合わせ情報シート：https://docs.google.com/spreadsheets/d/1NIxR9Nc5vDoYVvgI2vWOaJN0lRekrBwi-ie_3elPqpg/edit?gid=1659779253#gid=1659779253
+作業動画：https://drive.google.com/file/d/1j2e29DSEvzXq8-42Hd9Uc8mj4elRDVOg/view?usp=sharing
+
+よくある疑問点は「問い合わせ情報シート」にまとめております。
+そちらを読んでもわからない場合のみ、グループで私宛にメンションしてご連絡いただけると助かります。
 
 よろしくお願いいたします！
